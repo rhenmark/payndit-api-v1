@@ -1,0 +1,36 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""auth"""
+type AuthToken {
+  access_token: ID!
+}
+
+"""user_profile"""
+type UserProfile {
+  id: ID!
+  email: String!
+  iat: DateTime!
+  exp: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Query {
+  hello: String!
+  profile: UserProfile!
+}
+
+type Mutation {
+  signIn(form: SignInForm!): AuthToken!
+  register(form: SignInForm!): AuthToken!
+}
+
+input SignInForm {
+  email: String!
+  password: String!
+}

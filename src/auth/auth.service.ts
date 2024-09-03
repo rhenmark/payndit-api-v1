@@ -1,26 +1,67 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { AuthToken } from './models/auth.models';
+import { SupabaseService } from './config/supabase.config';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class AuthService {
+  private supabase: SupabaseClient;
+
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
-  ) {}
+    private jwtService: JwtService,
+    private supabaseService: SupabaseService,
+  ) {
+    this.supabase = this.supabaseService.getClient();
+  }
 
-  async signIn(username: string, pass: string): Promise<{access_token: string}> {
-    const user = await this.usersService.findOne(username);
-    console.log(user, username, pass)
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
+  async signIn(email: string, password: string): Promise<AuthToken> {
+    const { data, error } = await this.supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw new UnauthorizedException('Invalid credentials');
     }
-    // TODO: Generate a JWT and return it here
-    // instead of the user object
-    const payload = {sub: user.userId, username: user.username}
+
+    if (!data.session) {
+      throw new UnauthorizedException('Session not found');
+    }
+
     return {
-        access_token: await this.jwtService.signAsync(payload)
+      access_token: data.session.access_token,
     };
   }
-  
+
+  async register(email: string, password: string): Promise<AuthToken> {
+    const { data, error } = await this.supabase.auth.signUp({
+      email: email,
+      password: password,
+      // options: {
+      //   emailRedirectTo: 'https://example.com/welcome',
+      // },
+    });
+
+    if (error) {
+      if (
+        error.code === 'email_exists' ||
+        error.code === 'user_already_exists'
+      ) {
+        throw new ConflictException('Failed to sign up');
+      }
+      throw new InternalServerErrorException('Failed to sign up');
+    }
+
+    return {
+      access_token: data.session?.access_token,
+    };
+  }
 }

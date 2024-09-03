@@ -7,6 +7,8 @@ import { jwtConstants } from './constants';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { authExtProvider } from './auth-ext';
+import { AuthResolver } from './auth.resolver';
+import { SupabaseService } from './config/supabase.config';
 
 @Module({
   imports: [
@@ -14,10 +16,10 @@ import { authExtProvider } from './auth-ext';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '300s' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, authExtProvider],
+  providers: [AuthResolver, AuthService, SupabaseService, authExtProvider],
 })
 export class AuthModule {}
