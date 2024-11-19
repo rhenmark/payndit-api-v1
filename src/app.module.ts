@@ -14,7 +14,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env.local',
-      isGlobal: true
+      isGlobal: true,
     }),
     AuthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({

@@ -6,8 +6,7 @@ import { Public } from './auth/constants';
 export class AppService {
   getHello(): Record<any, any> {
     return {
-      data: []
-    }
+      data: [],
+    };
   }
-  
 }

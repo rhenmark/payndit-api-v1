@@ -8,9 +8,9 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Public()
-  @Get("get-hello")
+  @Get('get-hello')
   getHello(): Record<any, any> {
     return this.appService.getHello();
   }
 }
-``
+``;

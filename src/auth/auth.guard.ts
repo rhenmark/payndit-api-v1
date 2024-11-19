@@ -19,13 +19,13 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const context = GqlExecutionContext.create(ctx);
-    const isPublic = this.reflector.getAllAndOverride<boolean>(
-      IS_PUBLIC_KEY,
-     [context.getHandler(), context.getClass()]
-    );
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
-    if(isPublic) {
-        return true
+    if (isPublic) {
+      return true;
     }
     const request = context.getContext().req;
     const token = this.extractTokenFromHeader(request);

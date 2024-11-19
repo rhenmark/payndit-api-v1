@@ -1,14 +1,14 @@
-import { AppService } from "./app.service";
-import { Public } from "./auth/constants";
-import { Query, Resolver } from "@nestjs/graphql";
+import { AppService } from './app.service';
+import { Public } from './auth/constants';
+import { Query, Resolver } from '@nestjs/graphql';
 
 @Resolver()
 export class AppServiceResolver {
-    constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) {}
 
-    @Query(() => String)
-    @Public()
-    hello(): string {
-        return "hello"
-    }
+  @Query(() => String)
+  @Public()
+  hello(): string {
+    return 'hello';
+  }
 }
